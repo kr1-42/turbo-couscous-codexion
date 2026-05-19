@@ -8,9 +8,20 @@ SRC_DIR = src
 OBJ_DIR = .obj
 
 SRC = main.c\
+	main_loop.c\
+	actions.c\
+	routines.c
 
-UTILS_SRC = ft_strlen.c\
-	info_print.c
+UTILS_SRC = cleanup.c\
+	f_time.c\
+	fill_sim.c\
+	ft_atoll.c\
+	ft_strcmp.c\
+	ft_strlen.c\
+	info_print.c\
+	parsing.c\
+	queue.c\
+	sim_init.c
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o)) \
       $(addprefix $(OBJ_DIR)/utils/, $(UTILS_SRC:.c=.o))
@@ -55,3 +66,9 @@ art:
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠙⢷⣤⣀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣿⠃⠀⠀⠀⠀'
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠷⢶⣦⣴⡶⠿⠛⠉⠀⠀⠀⠀⠀⠀'
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀coder unite⠀⠀⠀⠀⠀⠀⠀⠀'
+
+
+ARGS = 3 400 100 100 100 7 100 fifo
+
+valgrind: all
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$(NAME) $(ARGS)

@@ -1,4 +1,4 @@
-#include "../headers/codexion.h"
+#include "../../headers/codexion.h"
 
 void	err_msg(char *msg)
 {
