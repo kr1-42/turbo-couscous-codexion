@@ -68,7 +68,10 @@ art:
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀coder unite⠀⠀⠀⠀⠀⠀⠀⠀'
 
 
-ARGS = 3 400 100 100 100 7 100 fifo
+ARGS = 3 400 100 100 100 7 400 edf
 
 valgrind: all
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$(NAME) $(ARGS)
+
+hellgrind: all
+	valgrind --tool=helgrind -s --history-level=approx ./$(NAME) $(ARGS)

@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/19 14:44:32 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/05/25 15:12:00 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ int	join_coder_threads(t_simulation *sim, pthread_t *threads)
 		return (0);
 
 	i = 0;
-	while (threads[i].p || threads[i].p == 0)
+	while (i == 0 || *(unsigned long *)&threads[i] != 0)
 	{
 		/* Check if thread handle is valid (not all zeros) */
 		if (i > 0 && *(unsigned long *)&threads[i] == 0)

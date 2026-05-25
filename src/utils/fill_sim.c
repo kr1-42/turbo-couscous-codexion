@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:06:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/19 14:04:58 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/05/25 15:12:20 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,28 +26,14 @@ static t_coder	**init_coders(int number_of_coders)
 	{
 		coders[i] = (t_coder *)malloc(sizeof(t_coder));
 		if (!coders[i])
-		{
-			for (int j = 0; j < i; j++)
-				free(coders[j]);
-			free(coders);
-			return (NULL);
-		}
+			return (cleanup_coders(coders), NULL);
 		coders[i]->id = i + 1;
 		coders[i]->compile_count = 0;
 		coders[i]->last_compile_time = 0;
 		coders[i]->burnout_time = 0;
 		coders[i]->is_burned_out = 0;
 		if (pthread_mutex_init(&coders[i]->mutex, NULL) != 0)
-		{
-			free(coders[i]);
-			for (int j = 0; j < i; j++)
-			{
-				pthread_mutex_destroy(&coders[j]->mutex);
-				free(coders[j]);
-			}
-			free(coders);
-			return (NULL);
-		}
+			return (cleanup_coders(coders), NULL);
 	}
 	coders[number_of_coders] = NULL;
 	return (coders);
@@ -65,26 +51,9 @@ static t_dongle	**init_dongles(int number_of_dongles)
 	{
 		dongles[i] = (t_dongle *)malloc(sizeof(t_dongle));
 		if (!dongles[i])
-		{
-			for (int j = 0; j < i; j++)
-			{
-				pthread_mutex_destroy(&dongles[j]->mutex);
-				free(dongles[j]);
-			}
-			free(dongles);
-			return (NULL);
-		}
+            return (cleanup_dongles(dongles), NULL);
 		if (pthread_mutex_init(&dongles[i]->mutex, NULL) != 0)
-		{
-			free(dongles[i]);
-			for (int j = 0; j < i; j++)
-			{
-				pthread_mutex_destroy(&dongles[j]->mutex);
-				free(dongles[j]);
-			}
-			free(dongles);
-			return (NULL);
-		}
+            return (cleanup_dongles(dongles), NULL);
 		dongles[i]->id = i + 1;
 		dongles[i]->is_available = 1;
 		dongles[i]->cooldown_time = 0;

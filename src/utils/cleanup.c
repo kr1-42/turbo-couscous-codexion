@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:09:13 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/19 14:04:18 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/05/25 13:14:59 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	cleanup_coders(t_coder **coders)
 	free(coders);
 }
 
-static void	cleanup_dongles(t_dongle **dongles)
+void	cleanup_dongles(t_dongle **dongles)
 {
 	int	i;
 

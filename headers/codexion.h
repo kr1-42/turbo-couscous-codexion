@@ -30,6 +30,7 @@ int         ft_strcmp(const char *s1, const char *s2);
 void        cleanup_coders(t_coder **coders);
 t_simulation    *fill_simulation(t_args *data);
 t_args	    *parse_data(char **av);
+void       cleanup_dongles(t_dongle **dongles);
 
 // queue operations
 t_queue     *queue_create(void);
