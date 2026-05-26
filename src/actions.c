@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/19 14:38:35 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/05/26 14:22:09 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 	pthread_mutex_lock(&dongle->mutex);
 	acquired = 0;
 
-	/* Check if dongle is available and cooldown is expired */
 	if (dongle->is_available && dongle->cooldown_time <= (get_current_time() - sim->start_time))
 	{
 		dongle->is_available = 0;
@@ -32,13 +31,6 @@ int	acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 		pthread_mutex_lock(&sim->state->print_lock);
 		printf("[%lld ms] Coder %lld: Acquired dongle %lld\n",
 			get_current_time() - sim->start_time, coder->id, dongle->id);
-		pthread_mutex_unlock(&sim->state->print_lock);
-	}
-	else
-	{
-		pthread_mutex_lock(&sim->state->print_lock);
-		printf("[%lld ms] Coder %lld: Dongle %lld not available (cooldown: %lld)\n",
-			get_current_time() - sim->start_time, coder->id, dongle->id, dongle->cooldown_time);
 		pthread_mutex_unlock(&sim->state->print_lock);
 	}
 

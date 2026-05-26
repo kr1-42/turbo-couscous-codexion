@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/25 15:12:00 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/05/26 15:02:27 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	*coder_routine(void *arg)
 		}
 
 		/* Check if reached required compiles */
+        printf("Coder %lld compile count: %lld\n", coder->id, coder->compile_count);
 		pthread_mutex_lock(&coder->mutex);
 		if (coder->compile_count >= sim->args->number_of_compiles_required)
 		{
@@ -84,7 +85,7 @@ void	*coder_routine(void *arg)
 		/* If no dongle acquired, sleep and retry */
 		if (!dongle_acquired)
 		{
-			action_sleep(10);
+			action_sleep(1);
 			continue ;
 		}
 

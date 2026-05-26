@@ -1,9 +1,6 @@
 #include "../headers/codexion.h"
 #include <stdio.h>
-// static int  run_simulation(t_simulation *sim)
-// {
 
-// }
 static void coder_add(t_coder **coders, int id)
 {
    int i = 0;
