@@ -70,6 +70,9 @@ art:
 
 ARGS = 3 600 100 100 100 7 100 edf
 
+test: all
+	./$(NAME) $(ARGS)
+
 valgrind: all
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$(NAME) $(ARGS)
 

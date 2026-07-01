@@ -40,7 +40,6 @@ static int fill_numbers_struct(t_args *ptr, char **av)
     ptr->number_of_compiles_required = is_valid_number(av[6]);
     if (ptr->number_of_compiles_required == -1)
         return (-1);
-    ptr->number_of_compiles_required =  ptr->number_of_compiles_required * ptr->number_of_coders; 
     ptr->dongle_cooldown = is_valid_number(av[7]);
     if (ptr->dongle_cooldown == -1)
         return (-1);
