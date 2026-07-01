@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/26 14:22:09 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/01 15:05:41 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,10 +145,10 @@ int	action_check_burnout(t_simulation *sim, t_coder *coder)
 
 	pthread_mutex_lock(&coder->mutex);
 
-	/* If not already burned out, check if time to burnout has been reached */
+	/* If not already burned out, check time since this coder's last compile */
 	if (!coder->is_burned_out)
 	{
-		elapsed_time = current_time;
+		elapsed_time = current_time - coder->last_compile_time;
 		if (elapsed_time >= sim->args->time_to_burnout)
 		{
 			coder->is_burned_out = 1;

@@ -68,7 +68,7 @@ art:
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀coder unite⠀⠀⠀⠀⠀⠀⠀⠀'
 
 
-ARGS = 3 600 100 100 100 7 100 edf
+ARGS = 3 600 100 100 100 7 100 fifo
 
 test: all
 	./$(NAME) $(ARGS)

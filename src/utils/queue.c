@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   queue.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/19 14:05:46 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/01 14:51:56 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,52 @@ void	*queue_pop(t_queue *q)
 	pthread_mutex_unlock(&q->mutex);
 	free(temp);
 	return (data);
+}
+
+void	*queue_peek(t_queue *q)
+{
+	void	*data;
+
+	if (!q)
+		return (NULL);
+	pthread_mutex_lock(&q->mutex);
+	data = NULL;
+	if (q->head)
+		data = q->head->data;
+	pthread_mutex_unlock(&q->mutex);
+	return (data);
+}
+
+int	queue_remove(t_queue *q, void *data)
+{
+	t_queue_node	*cur;
+	t_queue_node	*prev;
+
+	if (!q)
+		return (0);
+	pthread_mutex_lock(&q->mutex);
+	cur = q->head;
+	prev = NULL;
+	while (cur)
+	{
+		if (cur->data == data)
+		{
+			if (prev)
+				prev->next = cur->next;
+			else
+				q->head = cur->next;
+			if (cur == q->tail)
+				q->tail = prev;
+			q->size--;
+			pthread_mutex_unlock(&q->mutex);
+			free(cur);
+			return (1);
+		}
+		prev = cur;
+		cur = cur->next;
+	}
+	pthread_mutex_unlock(&q->mutex);
+	return (0);
 }
 
 void	queue_destroy(t_queue *q)

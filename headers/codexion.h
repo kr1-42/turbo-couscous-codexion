@@ -37,6 +37,9 @@ t_queue     *queue_create(void);
 void        queue_push(t_queue *q, void *data);
 void        *queue_pop(t_queue *q);
 void        queue_destroy(t_queue *q);
+void	*queue_peek(t_queue *q);
+int	queue_remove(t_queue *q, void *data);
+
 
 // simulation
 int         main_loop(char **av);

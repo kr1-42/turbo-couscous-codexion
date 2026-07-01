@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/26 15:02:27 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/01 15:07:28 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	*coder_routine(void *arg)
 	t_dongle			*dongle;
 	long long			i;
 	int					dongle_acquired;
+	int					in_queue;
 
 	ctx = (t_thread_context *)arg;
 	if (!ctx || !ctx->sim || !ctx->coder)
@@ -31,6 +32,7 @@ void	*coder_routine(void *arg)
 
 	sim = ctx->sim;
 	coder = ctx->coder;
+	in_queue = 0;
 
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("[%lld ms] Coder %lld: Started\n", get_current_time() - sim->start_time, coder->id);
@@ -59,7 +61,6 @@ void	*coder_routine(void *arg)
 		}
 
 		/* Check if reached required compiles */
-        printf("Coder %lld compile count: %lld\n", coder->id, coder->compile_count);
 		pthread_mutex_lock(&coder->mutex);
 		if (coder->compile_count >= sim->args->number_of_compiles_required)
 		{
@@ -68,7 +69,21 @@ void	*coder_routine(void *arg)
 		}
 		pthread_mutex_unlock(&coder->mutex);
 
-		/* Try to acquire a dongle */
+		/* FIFO scheduling: join the wait queue if not already in it */
+		if (!in_queue)
+		{
+			queue_push(sim->job_queue, coder);
+			in_queue = 1;
+		}
+
+		/* Only the coder at the head of the queue may attempt a dongle */
+		if (queue_peek(sim->job_queue) != coder)
+		{
+			action_sleep(1);
+			continue ;
+		}
+
+		/* Try to acquire a dongle (we are guaranteed to be at the head) */
 		dongle_acquired = 0;
 		i = 0;
 		while (sim->dongles[i] && !dongle_acquired)
@@ -82,17 +97,26 @@ void	*coder_routine(void *arg)
 			i++;
 		}
 
-		/* If no dongle acquired, sleep and retry */
+		/* If no dongle acquired, keep our place at the head and retry */
 		if (!dongle_acquired)
 		{
 			action_sleep(1);
 			continue ;
 		}
 
+		/* We got a dongle: leave the queue so the next coder can try */
+		queue_pop(sim->job_queue);
+		in_queue = 0;
+
 		/* Execute compile cycle */
 		action_compile(sim, coder, dongle);
 		action_debug(sim, coder);
 		action_refactor(sim, coder);
+
+		/* Record completed cycle */
+		pthread_mutex_lock(&coder->mutex);
+		coder->compile_count++;
+		pthread_mutex_unlock(&coder->mutex);
 
 		/* Release dongle */
 		release_dongle(sim, coder, dongle);
@@ -102,6 +126,11 @@ void	*coder_routine(void *arg)
 		sim->state->total_compiles++;
 		pthread_mutex_unlock(&sim->state->global_lock);
 	}
+
+	/* If we left the loop while still holding a queue slot, release it
+	   so we don't block coders waiting behind us */
+	if (in_queue)
+		queue_remove(sim->job_queue, coder);
 
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("[%lld ms] Coder %lld: Finished (Total compiles: %lld)\n",
@@ -197,4 +226,3 @@ int	join_coder_threads(t_simulation *sim, pthread_t *threads)
 	free(threads);
 	return (1);
 }
-
