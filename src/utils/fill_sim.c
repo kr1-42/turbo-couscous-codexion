@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:06:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/25 15:12:20 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/19 17:25:47 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static t_coder	**init_coders(int number_of_coders)
 	coders = (t_coder **)malloc(sizeof(t_coder *) * (number_of_coders + 1));
 	if (!coders)
 		return (NULL);
-	for (i = 0; i < number_of_coders; i++)
+	i = 0;
+	while (i++ < number_of_dongles)
 	{
 		coders[i] = (t_coder *)malloc(sizeof(t_coder));
 		if (!coders[i])
@@ -47,13 +48,14 @@ static t_dongle	**init_dongles(int number_of_dongles)
 	dongles = (t_dongle **)malloc(sizeof(t_dongle *) * (number_of_dongles + 1));
 	if (!dongles)
 		return (NULL);
-	for (i = 0; i < number_of_dongles; i++)
+	i = 0;
+	while (i++ < number_of_dongles)
 	{
 		dongles[i] = (t_dongle *)malloc(sizeof(t_dongle));
 		if (!dongles[i])
-            return (cleanup_dongles(dongles), NULL);
+			return (cleanup_dongles(dongles), NULL);
 		if (pthread_mutex_init(&dongles[i]->mutex, NULL) != 0)
-            return (cleanup_dongles(dongles), NULL);
+			return (cleanup_dongles(dongles), NULL);
 		dongles[i]->id = i + 1;
 		dongles[i]->is_available = 1;
 		dongles[i]->cooldown_time = 0;

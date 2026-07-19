@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   queue.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/01 14:51:56 by chrlomba         ###   ########.fr       */
+/*   Updated: 2026/07/19 17:31:42 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,22 +120,4 @@ int	queue_remove(t_queue *q, void *data)
 	}
 	pthread_mutex_unlock(&q->mutex);
 	return (0);
-}
-
-void	queue_destroy(t_queue *q)
-{
-	t_queue_node	*temp;
-
-	if (!q)
-		return ;
-	pthread_mutex_lock(&q->mutex);
-	while (q->head)
-	{
-		temp = q->head;
-		q->head = q->head->next;
-		free(temp);
-	}
-	pthread_mutex_unlock(&q->mutex);
-	pthread_mutex_destroy(&q->mutex);
-	free(q);
 }

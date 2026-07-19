@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   f_time.c                                           :+:      :+:    :+:   */
+/*   q_too.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/19 13:53:47 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/19 17:24:38 by chrilomb         ###   ########.fr       */
+/*   Created: 2026/07/19 17:32:03 by chrilomb          #+#    #+#             */
+/*   Updated: 2026/07/19 17:32:18 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/codexion.h"
+#include "../codexion.h"
 
-long long	get_current_time(void)
+void	queue_destroy(t_queue *q)
 {
-	struct timeval	tv;
-	long long		milliseconds;
+	t_queue_node	*temp;
 
-	gettimeofday(&tv, NULL);
-	milliseconds = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000LL);
-	return (milliseconds);
+	if (!q)
+		return ;
+	pthread_mutex_lock(&q->mutex);
+	while (q->head)
+	{
+		temp = q->head;
+		q->head = q->head->next;
+		free(temp);
+	}
+	pthread_mutex_unlock(&q->mutex);
+	pthread_mutex_destroy(&q->mutex);
+	free(q);
 }
