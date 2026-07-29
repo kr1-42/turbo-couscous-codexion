@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/01 15:07:28 by chrlomba         ###   ########.fr       */
+/*   Updated: 2026/07/29 13:08:49 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,15 @@ void	*coder_routine(void *arg)
 	ctx = (t_thread_context *)arg;
 	if (!ctx || !ctx->sim || !ctx->coder)
 		return (NULL);
-
 	sim = ctx->sim;
 	coder = ctx->coder;
 	in_queue = 0;
-
 	pthread_mutex_lock(&sim->state->print_lock);
-	printf("[%lld ms] Coder %lld: Started\n", get_current_time() - sim->start_time, coder->id);
+	printf("[%lld ms] Coder %lld: Started\n", get_current_time()
+		- sim->start_time, coder->id);
 	pthread_mutex_unlock(&sim->state->print_lock);
-
-	/* Main work loop */
 	while (1)
 	{
-		/* Check if simulation is still running */
 		pthread_mutex_lock(&sim->state->global_lock);
 		if (!sim->state->simulation_running)
 		{
@@ -49,18 +45,14 @@ void	*coder_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&sim->state->global_lock);
-
-		/* Check if burned out */
 		if (action_check_burnout(sim, coder))
 		{
 			pthread_mutex_lock(&sim->state->print_lock);
-			printf("[%lld ms] Coder %lld: Burned out!\n",
-				get_current_time() - sim->start_time, coder->id);
+			printf("[%lld ms] Coder %lld: Burned out!\n", get_current_time()
+				- sim->start_time, coder->id);
 			pthread_mutex_unlock(&sim->state->print_lock);
 			break ;
 		}
-
-		/* Check if reached required compiles */
 		pthread_mutex_lock(&coder->mutex);
 		if (coder->compile_count >= sim->args->number_of_compiles_required)
 		{
@@ -68,22 +60,16 @@ void	*coder_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&coder->mutex);
-
-		/* FIFO scheduling: join the wait queue if not already in it */
 		if (!in_queue)
 		{
 			queue_push(sim->job_queue, coder);
 			in_queue = 1;
 		}
-
-		/* Only the coder at the head of the queue may attempt a dongle */
 		if (queue_peek(sim->job_queue) != coder)
 		{
 			action_sleep(1);
 			continue ;
 		}
-
-		/* Try to acquire a dongle (we are guaranteed to be at the head) */
 		dongle_acquired = 0;
 		i = 0;
 		while (sim->dongles[i] && !dongle_acquired)
@@ -96,47 +82,30 @@ void	*coder_routine(void *arg)
 			}
 			i++;
 		}
-
-		/* If no dongle acquired, keep our place at the head and retry */
 		if (!dongle_acquired)
 		{
 			action_sleep(1);
 			continue ;
 		}
-
-		/* We got a dongle: leave the queue so the next coder can try */
 		queue_pop(sim->job_queue);
 		in_queue = 0;
-
-		/* Execute compile cycle */
 		action_compile(sim, coder, dongle);
 		action_debug(sim, coder);
 		action_refactor(sim, coder);
-
-		/* Record completed cycle */
 		pthread_mutex_lock(&coder->mutex);
 		coder->compile_count++;
 		pthread_mutex_unlock(&coder->mutex);
-
-		/* Release dongle */
 		release_dongle(sim, coder, dongle);
-
-		/* Update global compile count */
 		pthread_mutex_lock(&sim->state->global_lock);
 		sim->state->total_compiles++;
 		pthread_mutex_unlock(&sim->state->global_lock);
 	}
-
-	/* If we left the loop while still holding a queue slot, release it
-	   so we don't block coders waiting behind us */
 	if (in_queue)
 		queue_remove(sim->job_queue, coder);
-
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("[%lld ms] Coder %lld: Finished (Total compiles: %lld)\n",
 		get_current_time() - sim->start_time, coder->id, coder->compile_count);
 	pthread_mutex_unlock(&sim->state->print_lock);
-
 	free(ctx);
 	return (NULL);
 }
@@ -151,11 +120,10 @@ int	launch_coder_threads(t_simulation *sim, pthread_t **threads)
 
 	if (!sim || !sim->coders)
 		return (0);
-
-	*threads = (pthread_t *)malloc(sizeof(pthread_t) * (sim->args->number_of_coders + 1));
+	*threads = (pthread_t *)malloc(sizeof(pthread_t)
+			* (sim->args->number_of_coders + 1));
 	if (!*threads)
 		return (0);
-
 	i = 0;
 	while (sim->coders[i])
 	{
@@ -170,11 +138,10 @@ int	launch_coder_threads(t_simulation *sim, pthread_t **threads)
 			free(*threads);
 			return (0);
 		}
-
 		ctx->sim = sim;
 		ctx->coder = sim->coders[i];
-
-		result = pthread_create(&(*threads)[i], NULL, coder_routine, (void *)ctx);
+		result = pthread_create(&(*threads)[i], NULL, coder_routine,
+				(void *)ctx);
 		if (result != 0)
 		{
 			free(ctx);
@@ -186,11 +153,9 @@ int	launch_coder_threads(t_simulation *sim, pthread_t **threads)
 			free(*threads);
 			return (0);
 		}
-
 		i++;
 	}
-	(*threads)[i] = (pthread_t){0};  /* Null terminate */
-
+	(*threads)[i] = (pthread_t){0};
 	return (1);
 }
 
@@ -203,14 +168,12 @@ int	join_coder_threads(t_simulation *sim, pthread_t *threads)
 
 	if (!threads)
 		return (0);
-
 	i = 0;
 	while (i == 0 || *(unsigned long *)&threads[i] != 0)
 	{
 		/* Check if thread handle is valid (not all zeros) */
 		if (i > 0 && *(unsigned long *)&threads[i] == 0)
 			break ;
-
 		result = pthread_join(threads[i], NULL);
 		if (result != 0)
 		{
@@ -219,10 +182,8 @@ int	join_coder_threads(t_simulation *sim, pthread_t *threads)
 			pthread_mutex_unlock(&sim->state->print_lock);
 			return (0);
 		}
-
 		i++;
 	}
-
 	free(threads);
 	return (1);
 }
