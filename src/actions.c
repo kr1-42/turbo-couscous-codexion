@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   actions.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/01 15:05:41 by chrlomba         ###   ########.fr       */
+/*   Updated: 2026/07/30 15:49:53 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,16 @@ int	acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 
 	pthread_mutex_lock(&dongle->mutex);
 	acquired = 0;
-
-	if (dongle->is_available && dongle->cooldown_time <= (get_current_time() - sim->start_time))
+	if (dongle->is_available && dongle->cooldown_time
+		<= (get_current_time() - sim->start_time))
 	{
 		dongle->is_available = 0;
 		acquired = 1;
-
 		pthread_mutex_lock(&sim->state->print_lock);
 		printf("[%lld ms] Coder %lld: Acquired dongle %lld\n",
 			get_current_time() - sim->start_time, coder->id, dongle->id);
 		pthread_mutex_unlock(&sim->state->print_lock);
 	}
-
 	pthread_mutex_unlock(&dongle->mutex);
 	return (acquired);
 }
@@ -43,15 +41,14 @@ int	acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 void	release_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 {
 	pthread_mutex_lock(&dongle->mutex);
-
 	dongle->is_available = 1;
-	dongle->cooldown_time = get_current_time() - sim->start_time + sim->args->dongle_cooldown;
-
+	dongle->cooldown_time = get_current_time()
+		- sim->start_time + sim->args->dongle_cooldown;
 	pthread_mutex_unlock(&dongle->mutex);
-
 	pthread_mutex_lock(&sim->state->print_lock);
-	printf("[%lld ms] Coder %lld: Released dongle %lld (cooldown until %lld ms)\n",
-		get_current_time() - sim->start_time, coder->id, dongle->id, dongle->cooldown_time);
+	printf("[%lld ms] C %lld: Released dongle %lld (cooldown until %lld ms)\n",
+		get_current_time() - sim->start_time, coder->id,
+		dongle->id, dongle->cooldown_time);
 	pthread_mutex_unlock(&sim->state->print_lock);
 }
 
@@ -63,22 +60,15 @@ void	action_compile(t_simulation *sim, t_coder *coder, t_dongle *dongle)
 	long long	end_time;
 
 	start_time = get_current_time() - sim->start_time;
-
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("[%lld ms] Coder %lld: Starting compile (dongle %lld)...\n",
 		start_time, coder->id, dongle->id);
 	pthread_mutex_unlock(&sim->state->print_lock);
-
-	/* Sleep for compile duration */
 	action_sleep(sim->args->time_to_compile);
-
 	end_time = get_current_time() - sim->start_time;
-
-	/* Update coder state */
 	pthread_mutex_lock(&coder->mutex);
 	coder->last_compile_time = end_time;
 	pthread_mutex_unlock(&coder->mutex);
-
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("[%lld ms] Coder %lld: Compile complete (took %lld ms)\n",
 		end_time, coder->id, end_time - start_time);
@@ -98,7 +88,6 @@ void	action_debug(t_simulation *sim, t_coder *coder)
 	printf("[%lld ms] Coder %lld: Starting debug...\n", start_time, coder->id);
 	pthread_mutex_unlock(&sim->state->print_lock);
 
-	/* Sleep for debug duration */
 	action_sleep(sim->args->time_to_debug);
 
 	end_time = get_current_time() - sim->start_time;

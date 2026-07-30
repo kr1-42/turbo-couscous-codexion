@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 14:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/29 13:08:49 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/30 15:47:55 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,30 +129,13 @@ int	launch_coder_threads(t_simulation *sim, pthread_t **threads)
 	{
 		ctx = (t_thread_context *)malloc(sizeof(t_thread_context));
 		if (!ctx)
-		{
-			while (i > 0)
-			{
-				i--;
-				pthread_cancel((*threads)[i]);
-			}
-			free(*threads);
-			return (0);
-		}
+			return (ft_error(1, 4, 2), ctx_clean(sim, *threads, ctx, i), 0);
 		ctx->sim = sim;
 		ctx->coder = sim->coders[i];
 		result = pthread_create(&(*threads)[i], NULL, coder_routine,
 				(void *)ctx);
 		if (result != 0)
-		{
-			free(ctx);
-			while (i > 0)
-			{
-				i--;
-				pthread_cancel((*threads)[i]);
-			}
-			free(*threads);
-			return (0);
-		}
+			return (ft_error(1, 4, 2), ctx_clean(sim, *threads, ctx, i), 0);
 		i++;
 	}
 	(*threads)[i] = (pthread_t){0};

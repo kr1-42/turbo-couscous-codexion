@@ -7,17 +7,21 @@
 #include <sys/time.h>
 #include "struct.h"
 
+// Error messages
+// 1
 #define N_ARG_ERROR "invalid number of arguments ... usage\n./codexion \n1:number_of_coders \t" \
 "2:time_to_burnout \n3:time_to_compile \t4:time_to_debug\n 5:time_to_refactor \t6:number_of" \
 "_compiles_required \n7:dongle_cooldown \t8:scheduler\n"
-
+// 2
 #define SCHEDULER_ERROR "invalid scheduler ... usage\n./codexion ARGS fifo or edf (ALL IN LOWERCASE)\n"
-
+// 3
 #define ARG_ERROR "only valid positive integers are accepted as arguments\n"
-
+// 4
 #define MALLOC_ERROR "malloc error accured\n"
-
+// 5
 #define SIM_ERR "simulation error accured\n"
+
+// context
 
 void	err_msg(char *msg);
 
@@ -27,11 +31,14 @@ long long   get_current_time(void);
 int		    ft_strlen(char *str);
 long long	ft_atoll(const char *number_str);
 int         ft_strcmp(const char *s1, const char *s2);
-void        cleanup_coders(t_coder **coders);
+void        ft_putstr(const char *s);
 t_simulation    *fill_simulation(t_args *data);
 t_args	    *parse_data(char **av);
+// cleanup
+void        ctx_clean(t_simulation *sim, pthread_t *threads, t_thread_context *ctx, long long i);
+void        cleanup_coders(t_coder **coders);
 void       cleanup_dongles(t_dongle **dongles);
-
+void        free_simulation(t_simulation *sim);
 // queue operations
 t_queue     *queue_create(void);
 void        queue_push(t_queue *q, void *data);
@@ -44,7 +51,6 @@ int	queue_remove(t_queue *q, void *data);
 // simulation
 int         main_loop(char **av);
 t_simulation *init_simulation(t_args *data);
-void        free_simulation(t_simulation *sim);
 
 // actions
 int			acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle);

@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/05 16:09:13 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/05/25 13:14:59 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/07/30 15:28:19 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,19 @@ void	free_simulation(t_simulation *sim)
 	if (sim->args)
 		free(sim->args);
 	free(sim);
+}
+
+void	ctx_clean(t_simulation *sim,
+		pthread_t *threads, t_thread_context *ctx, long long i)
+{
+	if (ctx)
+		free(ctx);
+	while (i > 0)
+	{
+		i--;
+		pthread_cancel(threads[i]);
+	}
+	free(threads);
+	free_simulation(sim);
+	sim = 0x0;
 }
