@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parsing.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/19 17:26:50 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/19 17:30:21 by chrilomb         ###   ########.fr       */
+/*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
+/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/codexion.h"
-#define A 2147483647
-#define INVALID_NUM (t_args *)0x1
-#define INVALID_NUM (t_args *)0x1
+#define MAX_ARG 2147483647LL
 
-static int	is_valid_number(char *str)
+static long long	is_valid_number(char *str)
 {
-	int	i;
-	int	return_value;
+	int			i;
+	long long	value;
 
 	i = 0;
 	while (str[i])
@@ -27,18 +25,18 @@ static int	is_valid_number(char *str)
 			return (-1);
 		i++;
 	}
-	if (i == 0 || i > 11)
+	if (i == 0 || i > 10)
 		return (-1);
-	return_value = ft_atoll(str);
-	if (return_value < 0 || return_value > A)
+	value = ft_atoll(str);
+	if (value < 0 || value > MAX_ARG)
 		return (-1);
-	return (return_value);
+	return (value);
 }
 
 static int	fill_numbers_struct(t_args *ptr, char **av)
 {
 	ptr->number_of_coders = is_valid_number(av[1]);
-	if (ptr->number_of_coders == -1)
+	if (ptr->number_of_coders < 1)
 		return (-1);
 	ptr->time_to_burnout = is_valid_number(av[2]);
 	if (ptr->time_to_burnout == -1)
@@ -70,9 +68,10 @@ t_args	*parse_data(char **av)
 	if (!ptr)
 		return (NULL);
 	if (fill_numbers_struct(ptr, av) == -1)
-		return (free(ptr), INVALID_NUM);
+		return (free(ptr), (t_args *)1);
 	if (ft_strcmp(ptr->scheduler, "edf") != 0
 		&& ft_strcmp(ptr->scheduler, "fifo") != 0)
-		return (free(ptr), INVALID_SCHED);
+		return (free(ptr), (t_args *)2);
+	ptr->edf_mode = (ft_strcmp(ptr->scheduler, "edf") == 0);
 	return (ptr);
 }

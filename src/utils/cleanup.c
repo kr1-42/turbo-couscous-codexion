@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleanup.c                                          :+:      :+:    :+:   */
+/*   cleanup.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/05/05 16:09:13 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/30 15:28:19 by chrilomb         ###   ########.fr       */
+/*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
+/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/codexion.h"
-#include <stdlib.h>
 
-void	cleanup_coders(t_coder **coders)
+void	cleanup_coders(t_coder **coders, long long n)
 {
-	int	i;
+	long long	i;
 
 	if (!coders)
 		return ;
 	i = 0;
-	while (coders[i])
+	while (i < n && coders[i])
 	{
 		pthread_mutex_destroy(&coders[i]->mutex);
 		free(coders[i]);
@@ -29,16 +28,15 @@ void	cleanup_coders(t_coder **coders)
 	free(coders);
 }
 
-void	cleanup_dongles(t_dongle **dongles)
+void	cleanup_dongles(t_dongle **dongles, long long n)
 {
-	int	i;
+	long long	i;
 
 	if (!dongles)
 		return ;
 	i = 0;
-	while (dongles[i])
+	while (i < n && dongles[i])
 	{
-		pthread_mutex_destroy(&dongles[i]->mutex);
 		free(dongles[i]);
 		i++;
 	}
@@ -50,33 +48,19 @@ void	free_simulation(t_simulation *sim)
 	if (!sim)
 		return ;
 	if (sim->coders)
-		cleanup_coders(sim->coders);
+		cleanup_coders(sim->coders, sim->args->number_of_coders);
 	if (sim->dongles)
-		cleanup_dongles(sim->dongles);
-	if (sim->job_queue)
-		queue_destroy(sim->job_queue);
+		cleanup_dongles(sim->dongles, sim->args->number_of_coders);
+	if (sim->heap)
+		heap_destroy(sim->heap);
 	if (sim->state)
 	{
-		pthread_mutex_destroy(&sim->state->global_lock);
 		pthread_mutex_destroy(&sim->state->print_lock);
+		pthread_mutex_destroy(&sim->state->arbiter_mutex);
+		pthread_cond_destroy(&sim->state->arbiter_cond);
 		free(sim->state);
 	}
 	if (sim->args)
 		free(sim->args);
 	free(sim);
-}
-
-void	ctx_clean(t_simulation *sim,
-		pthread_t *threads, t_thread_context *ctx, long long i)
-{
-	if (ctx)
-		free(ctx);
-	while (i > 0)
-	{
-		i--;
-		pthread_cancel(threads[i]);
-	}
-	free(threads);
-	free_simulation(sim);
-	sim = 0x0;
 }

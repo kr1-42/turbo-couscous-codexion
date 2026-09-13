@@ -1,70 +1,75 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
+/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 # define CODEXION_H
 
-#include <unistd.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include "struct.h"
+# include <unistd.h>
+# include <pthread.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include "struct.h"
 
-// Error messages
-// 1
-#define N_ARG_ERROR "invalid number of arguments ... usage\n./codexion \n1:number_of_coders \t" \
-"2:time_to_burnout \n3:time_to_compile \t4:time_to_debug\n 5:time_to_refactor \t6:number_of" \
-"_compiles_required \n7:dongle_cooldown \t8:scheduler\n"
-// 2
-#define SCHEDULER_ERROR "invalid scheduler ... usage\n./codexion ARGS fifo or edf (ALL IN LOWERCASE)\n"
-// 3
-#define ARG_ERROR "only valid positive integers are accepted as arguments\n"
-// 4
-#define MALLOC_ERROR "malloc error accured\n"
-// 5
-#define SIM_ERR "simulation error accured\n"
+# define N_ARG_ERROR "wrong number of arguments, see subject for usage\n"
+# define SCHEDULER_ERROR "scheduler must be exactly fifo or edf\n"
+# define ARG_ERROR "arguments must be valid integers (coders >= 1)\n"
+# define MALLOC_ERROR "malloc error occured\n"
+# define SIM_ERR "simulation error occured\n"
 
-// context
+/* context */
 
-void	err_msg(char *msg);
+void			err_msg(const char *msg);
 
+/* utils */
+long long		get_current_time(void);
+int				ft_strlen(const char *str);
+long long		ft_atoll(const char *number_str);
+int				ft_strcmp(const char *s1, const char *s2);
+t_simulation	*fill_simulation(t_args *data);
+t_args			*parse_data(char **av);
 
-// utils
-long long   get_current_time(void);
-int		    ft_strlen(char *str);
-long long	ft_atoll(const char *number_str);
-int         ft_strcmp(const char *s1, const char *s2);
-void        ft_putstr(const char *s);
-t_simulation    *fill_simulation(t_args *data);
-t_args	    *parse_data(char **av);
-// cleanup
-void        ctx_clean(t_simulation *sim, pthread_t *threads, t_thread_context *ctx, long long i);
-void        cleanup_coders(t_coder **coders);
-void       cleanup_dongles(t_dongle **dongles);
-void        free_simulation(t_simulation *sim);
-// queue operations
-t_queue     *queue_create(void);
-void        queue_push(t_queue *q, void *data);
-void        *queue_pop(t_queue *q);
-void        queue_destroy(t_queue *q);
-void	*queue_peek(t_queue *q);
-int	queue_remove(t_queue *q, void *data);
+/* cleanup */
+void			cleanup_coders(t_coder **coders, long long n);
+void			cleanup_dongles(t_dongle **dongles, long long n);
+void			free_simulation(t_simulation *sim);
 
+/* heap (priority queue) */
+t_heap			*heap_create(long long capacity, int edf_mode);
+void			heap_push(t_heap *h, void *data, long long key1,
+					long long key2);
+void			*heap_remove(t_heap *h, void *data);
+void			heap_destroy(t_heap *h);
 
-// simulation
-int         main_loop(char **av);
-t_simulation *init_simulation(t_args *data);
+/* simulation */
+int				main_loop(char **av);
+t_simulation	*init_simulation(t_args *data);
 
-// actions
-int			acquire_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle);
-void		release_dongle(t_simulation *sim, t_coder *coder, t_dongle *dongle);
-void		action_compile(t_simulation *sim, t_coder *coder, t_dongle *dongle);
-void		action_debug(t_simulation *sim, t_coder *coder);
-void		action_refactor(t_simulation *sim, t_coder *coder);
-int			action_check_burnout(t_simulation *sim, t_coder *coder);
-void		action_sleep(long long milliseconds);
+/* actions */
+long long		sim_now(t_simulation *sim);
+void			log_state(t_simulation *sim, long long ts, long long id,
+					const char *msg);
+int				acquire_both_dongles(t_simulation *sim, t_coder *coder);
+void			release_both_dongles(t_simulation *sim, t_coder *coder);
+void			action_compile(t_simulation *sim, t_coder *coder);
+void			action_debug(t_simulation *sim, t_coder *coder);
+void			action_refactor(t_simulation *sim, t_coder *coder);
+void			action_sleep(long long milliseconds);
 
-// routines
-void		*coder_routine(void *arg);
-int			launch_coder_threads(t_simulation *sim, pthread_t **threads);
-int			join_coder_threads(t_simulation *sim, pthread_t *threads);
+/* routines */
+void			*coder_routine(void *arg);
+int				launch_coder_threads(t_simulation *sim, pthread_t **threads);
+int				join_coder_threads(t_simulation *sim, pthread_t *threads);
 
+/* monitor */
+void			*monitor_routine(void *arg);
 
 #endif

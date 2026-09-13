@@ -10,7 +10,8 @@ OBJ_DIR = .obj
 SRC = main.c\
 	main_loop.c\
 	actions.c\
-	routines.c
+	routines.c\
+	monitor.c
 
 UTILS_SRC = cleanup.c\
 	f_time.c\
@@ -18,9 +19,9 @@ UTILS_SRC = cleanup.c\
 	ft_atoll.c\
 	ft_strcmp.c\
 	ft_strlen.c\
+	heap.c\
 	info_print.c\
 	parsing.c\
-	queue.c\
 	sim_init.c
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o)) \
@@ -49,7 +50,7 @@ fclean: clean
 re: fclean all
 
 art:
-	@clear
+	-@clear 2>/dev/null
 	@echo '⠀⠀⠀⠀⠀⠀⠀⣠⣴⡶⠟⠛⠿⠷⠶⣶⣤⣤⣀⠀⠀⠀⠀⠀⠀⠀'
 	@echo '⠀⠀⠀⠀⠀⣠⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⣦⡀⠀⠀⠀⠀'
 	@echo '⠀⠀⠀⠀⢠⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣦⠀⠀⠀'

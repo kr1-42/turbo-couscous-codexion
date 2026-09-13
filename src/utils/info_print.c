@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   info_print.c                                       :+:      :+:    :+:   */
+/*   info_print.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/19 17:26:14 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/07/19 17:26:14 by chrilomb         ###   ########.fr       */
+/*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
+/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/codexion.h"
 
-void	err_msg(char *msg)
+void	err_msg(const char *msg)
 {
 	write(2, msg, ft_strlen(msg));
 }
