@@ -6,7 +6,7 @@
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/09/17 14:54:17 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <unistd.h>
 # include <pthread.h>
+#include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include "struct.h"
@@ -43,6 +44,7 @@ void			cleanup_dongles(t_dongle **dongles, long long n);
 void			free_simulation(t_simulation *sim);
 
 /* heap (priority queue) */
+void			sift_up(t_heap *h, long long i);
 t_heap			*heap_create(long long capacity, int edf_mode);
 void			heap_push(t_heap *h, void *data, long long key1,
 					long long key2);

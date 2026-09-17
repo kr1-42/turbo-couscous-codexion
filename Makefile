@@ -1,7 +1,6 @@
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread -g
 
-# Project Name
 NAME = codexion
 
 SRC_DIR = src
@@ -20,6 +19,7 @@ UTILS_SRC = cleanup.c\
 	ft_strcmp.c\
 	ft_strlen.c\
 	heap.c\
+	heaptoo.c\
 	info_print.c\
 	parsing.c\
 	sim_init.c
@@ -69,7 +69,7 @@ art:
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀coder unite⠀⠀⠀⠀⠀⠀⠀⠀'
 
 
-ARGS = 200 800 100 100 100 7 100 fifo
+ARGS = 2 800 100 100 100 2 100 fifo
 
 test: all
 	./$(NAME) $(ARGS)
@@ -78,4 +78,4 @@ valgrind: all
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$(NAME) $(ARGS)
 
 hellgrind: all
-	valgrind --tool=helgrind -s --history-level=approx ./$(NAME) $(ARGS)
+	valgrind --tool=helgrind -s --history-level=approx --vgdb-error=0 ./$(NAME) $(ARGS)

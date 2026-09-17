@@ -19,7 +19,8 @@ long long	sim_now(t_simulation *sim)
 	return (get_current_time() - sim->start_time);
 }
 
-void	log_state(t_simulation *sim, long long ts, long long id, const char *msg)
+void	log_state(t_simulation *sim,
+				long long ts, long long id, const char *msg)
 {
 	pthread_mutex_lock(&sim->state->print_lock);
 	printf("%lld %lld %s\n", ts, id, msg);

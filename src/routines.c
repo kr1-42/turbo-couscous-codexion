@@ -90,7 +90,7 @@ int	launch_coder_threads(t_simulation *sim, pthread_t **threads)
 		ctx->sim = sim;
 		ctx->coder = sim->coders[i];
 		if (pthread_create(&(*threads)[i], NULL, coder_routine,
-				(void *)ctx) != 0)
+			(void *)ctx) != 0)
 		{
 			free(ctx);
 			err_msg(MALLOC_ERROR);
