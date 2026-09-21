@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/17 14:54:17 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/09/21 12:38:49 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <unistd.h>
 # include <pthread.h>
-#include <stdio.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include "struct.h"

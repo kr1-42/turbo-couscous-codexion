@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   struct.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/09/21 12:39:08 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <pthread.h>
 
-typedef struct s_simulation	t_simulation;
+typedef struct s_simulation		t_simulation;
 typedef struct s_coder			t_coder;
 typedef struct s_dongle			t_dongle;
 

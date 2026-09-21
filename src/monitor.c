@@ -34,7 +34,7 @@ static long long	check_burnout(t_simulation *sim)
 			&& sim->coders[i]->compile_count
 			< sim->args->number_of_compiles_required
 			&& now - sim->coders[i]->last_compile_start
-		>= sim->args->time_to_burnout)
+			>= sim->args->time_to_burnout)
 		{
 			sim->coders[i]->is_burned_out = 1;
 			pthread_mutex_unlock(&sim->coders[i]->mutex);
