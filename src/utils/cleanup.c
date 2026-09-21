@@ -43,6 +43,22 @@ void	cleanup_dongles(t_dongle **dongles, long long n)
 	free(dongles);
 }
 
+void	cleanup_partial_sim(t_simulation *sim, int stage)
+{
+	if (stage >= 3)
+	{
+		pthread_mutex_destroy(&sim->state->print_lock);
+		pthread_mutex_destroy(&sim->state->arbiter_mutex);
+		pthread_cond_destroy(&sim->state->arbiter_cond);
+		free(sim->state);
+	}
+	if (stage >= 2)
+		cleanup_dongles(sim->dongles, sim->args->number_of_coders);
+	if (stage >= 1)
+		cleanup_coders(sim->coders, sim->args->number_of_coders);
+	free(sim);
+}
+
 void	free_simulation(t_simulation *sim)
 {
 	if (!sim)

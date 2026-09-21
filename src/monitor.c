@@ -65,10 +65,28 @@ static int	all_coders_done(t_simulation *sim)
 	return (done);
 }
 
+static int	monitor_check_loop(t_simulation *sim)
+{
+	long long	burned_id;
+
+	burned_id = check_burnout(sim);
+	if (burned_id)
+	{
+		log_state(sim, sim_now(sim), burned_id, "burned out");
+		stop_simulation(sim);
+		return (0);
+	}
+	if (all_coders_done(sim))
+	{
+		stop_simulation(sim);
+		return (0);
+	}
+	return (1);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_simulation	*sim;
-	long long		burned_id;
 
 	sim = (t_simulation *)arg;
 	while (1)
@@ -80,18 +98,8 @@ void	*monitor_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&sim->state->arbiter_mutex);
-		burned_id = check_burnout(sim);
-		if (burned_id)
-		{
-			log_state(sim, sim_now(sim), burned_id, "burned out");
-			stop_simulation(sim);
+		if (!monitor_check_loop(sim))
 			break ;
-		}
-		if (all_coders_done(sim))
-		{
-			stop_simulation(sim);
-			break ;
-		}
 		usleep(1000);
 	}
 	return (NULL);

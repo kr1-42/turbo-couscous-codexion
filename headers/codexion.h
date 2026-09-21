@@ -6,7 +6,7 @@
 /*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/21 12:38:49 by chrlomba         ###   ########.fr       */
+/*   Updated: 2026/09/21 20:49:32 by chrlomba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,23 @@
 /* context */
 
 void			err_msg(const char *msg);
+void			log_state(t_simulation *sim, long long ts, long long id,
+					const char *msg);
 
 /* utils */
 long long		get_current_time(void);
+long long		sim_now(t_simulation *sim);
 int				ft_strlen(const char *str);
 long long		ft_atoll(const char *number_str);
 int				ft_strcmp(const char *s1, const char *s2);
 t_simulation	*fill_simulation(t_args *data);
 t_args			*parse_data(char **av);
+void			*ft_calloc(size_t num_elems, size_t byte_size);
 
 /* cleanup */
 void			cleanup_coders(t_coder **coders, long long n);
 void			cleanup_dongles(t_dongle **dongles, long long n);
+void			cleanup_partial_sim(t_simulation *sim, int stage);
 void			free_simulation(t_simulation *sim);
 
 /* heap (priority queue) */
@@ -55,12 +60,14 @@ void			heap_destroy(t_heap *h);
 int				main_loop(char **av);
 t_simulation	*init_simulation(t_args *data);
 
-/* actions */
-long long		sim_now(t_simulation *sim);
-void			log_state(t_simulation *sim, long long ts, long long id,
-					const char *msg);
+/* dongle arbitration */
+int				coder_ready(t_coder *coder, long long now);
+int				coder_wins_dongle(t_simulation *sim, t_coder *self,
+					t_dongle *d, long long now);
 int				acquire_both_dongles(t_simulation *sim, t_coder *coder);
 void			release_both_dongles(t_simulation *sim, t_coder *coder);
+
+/* actions */
 void			action_compile(t_simulation *sim, t_coder *coder);
 void			action_debug(t_simulation *sim, t_coder *coder);
 void			action_refactor(t_simulation *sim, t_coder *coder);

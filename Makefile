@@ -9,13 +9,18 @@ OBJ_DIR = .obj
 SRC = main.c\
 	main_loop.c\
 	actions.c\
+	dongle_priority.c\
+	dongle_acquire.c\
+	dongle_release.c\
 	routines.c\
+	thread_pool.c\
 	monitor.c
 
 UTILS_SRC = cleanup.c\
 	f_time.c\
 	fill_sim.c\
 	ft_atoll.c\
+	ft_calloc.c\
 	ft_strcmp.c\
 	ft_strlen.c\
 	heap.c\

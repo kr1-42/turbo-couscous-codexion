@@ -21,3 +21,8 @@ long long	get_current_time(void)
 	milliseconds = (tv.tv_sec * 1000LL) + (tv.tv_usec / 1000LL);
 	return (milliseconds);
 }
+
+long long	sim_now(t_simulation *sim)
+{
+	return (get_current_time() - sim->start_time);
+}

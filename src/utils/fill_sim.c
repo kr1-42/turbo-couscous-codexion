@@ -14,7 +14,7 @@
 
 static t_coder	**init_coders(long long number_of_coders)
 {
-	t_coder	**coders;
+	t_coder		**coders;
 	long long	i;
 
 	coders = (t_coder **)malloc(sizeof(t_coder *) * (number_of_coders + 1));
@@ -23,23 +23,14 @@ static t_coder	**init_coders(long long number_of_coders)
 	i = 0;
 	while (i < number_of_coders)
 	{
-		coders[i] = (t_coder *)malloc(sizeof(t_coder));
+		coders[i] = (t_coder *)ft_calloc(1, sizeof(t_coder));
 		if (!coders[i] || pthread_mutex_init(&coders[i]->mutex, NULL) != 0)
 		{
 			if (coders[i])
 				free(coders[i]);
-			coders[i] = NULL;
 			return (cleanup_coders(coders, i), NULL);
 		}
 		coders[i]->id = i + 1;
-		coders[i]->compile_count = 0;
-		coders[i]->last_compile_start = 0;
-		coders[i]->deadline = 0;
-		coders[i]->seq = 0;
-		coders[i]->waiting = 0;
-		coders[i]->is_burned_out = 0;
-		coders[i]->dongle_left = NULL;
-		coders[i]->dongle_right = NULL;
 		i++;
 	}
 	coders[number_of_coders] = NULL;
@@ -109,24 +100,13 @@ t_simulation	*fill_simulation(t_args *data)
 	simulation->dongles = init_dongles(simulation->coders,
 			data->number_of_coders);
 	if (!simulation->dongles)
-		return (cleanup_coders(simulation->coders, data->number_of_coders),
-			free(simulation), NULL);
+		return (cleanup_partial_sim(simulation, 1), NULL);
 	simulation->state = init_sim_state();
 	if (!simulation->state)
-		return (cleanup_coders(simulation->coders, data->number_of_coders),
-			cleanup_dongles(simulation->dongles, data->number_of_coders),
-			free(simulation), NULL);
+		return (cleanup_partial_sim(simulation, 2), NULL);
 	simulation->heap = heap_create(data->number_of_coders, data->edf_mode);
 	if (!simulation->heap)
-	{
-		cleanup_coders(simulation->coders, data->number_of_coders);
-		cleanup_dongles(simulation->dongles, data->number_of_coders);
-		pthread_mutex_destroy(&simulation->state->print_lock);
-		pthread_mutex_destroy(&simulation->state->arbiter_mutex);
-		pthread_cond_destroy(&simulation->state->arbiter_cond);
-		free(simulation->state);
-		return (free(simulation), NULL);
-	}
+		return (cleanup_partial_sim(simulation, 3), NULL);
 	simulation->start_time = 0;
 	return (simulation);
 }

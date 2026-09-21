@@ -1,37 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   actions.c                                    :+:      :+:    :+:   */
+/*   dongle_release.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
+/*   Created: 2026/09/21 00:00:00 by chrilomb          #+#    #+#             */
 /*   Updated: 2026/09/21 00:00:00 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/codexion.h"
 
-void	action_compile(t_simulation *sim, t_coder *coder)
+void	release_both_dongles(t_simulation *sim, t_coder *coder)
 {
-	log_state(sim, sim_now(sim), coder->id, "is compiling");
-	action_sleep(sim->args->time_to_compile);
-}
+	t_sim_state	*st;
+	long long	until;
 
-void	action_debug(t_simulation *sim, t_coder *coder)
-{
-	log_state(sim, sim_now(sim), coder->id, "is debugging");
-	action_sleep(sim->args->time_to_debug);
-}
-
-void	action_refactor(t_simulation *sim, t_coder *coder)
-{
-	log_state(sim, sim_now(sim), coder->id, "is refactoring");
-	action_sleep(sim->args->time_to_refactor);
-}
-
-void	action_sleep(long long milliseconds)
-{
-	if (milliseconds > 0)
-		usleep(milliseconds * 1000);
+	st = sim->state;
+	pthread_mutex_lock(&st->arbiter_mutex);
+	until = sim_now(sim) + sim->args->dongle_cooldown;
+	coder->dongle_left->is_available = 1;
+	coder->dongle_left->cooldown_until = until;
+	coder->dongle_right->is_available = 1;
+	coder->dongle_right->cooldown_until = until;
+	pthread_cond_broadcast(&st->arbiter_cond);
+	pthread_mutex_unlock(&st->arbiter_mutex);
 }

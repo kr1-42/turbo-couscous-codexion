@@ -16,3 +16,11 @@ void	err_msg(const char *msg)
 {
 	write(2, msg, ft_strlen(msg));
 }
+
+void	log_state(t_simulation *sim,
+				long long ts, long long id, const char *msg)
+{
+	pthread_mutex_lock(&sim->state->print_lock);
+	printf("%lld %lld %s\n", ts, id, msg);
+	pthread_mutex_unlock(&sim->state->print_lock);
+}
