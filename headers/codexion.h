@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chrlomba <chrlomba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/21 20:49:32 by chrlomba         ###   ########.fr       */
+/*   Updated: 2026/09/29 14:57:56 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void			log_state(t_simulation *sim, long long ts, long long id,
 					const char *msg);
 
 /* utils */
+int				exit_screen(void);
 long long		get_current_time(void);
 long long		sim_now(t_simulation *sim);
 int				ft_strlen(const char *str);

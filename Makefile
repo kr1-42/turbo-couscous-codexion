@@ -17,6 +17,7 @@ SRC = main.c\
 	monitor.c
 
 UTILS_SRC = cleanup.c\
+	exitscreen.c\
 	f_time.c\
 	fill_sim.c\
 	ft_atoll.c\
@@ -74,7 +75,7 @@ art:
 	@echo '⠀⠀⠀⠀⠀⠀⠀⠀coder unite⠀⠀⠀⠀⠀⠀⠀⠀'
 
 
-ARGS = 2 800 100 100 100 2 100 fifo
+ARGS = 20 800 100 100 100 7 100 fifo
 
 test: all
 	./$(NAME) $(ARGS)

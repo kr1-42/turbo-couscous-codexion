@@ -58,5 +58,5 @@ int	main_loop(char **av)
 	if (run_simulation(simulation) == -1)
 		return (free_simulation(simulation), err_msg(SIM_ERR), -1);
 	free_simulation(simulation);
-	return (0);
+	return (exit_screen());
 }
