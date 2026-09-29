@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_loop.c                                  :+:      :+:    :+:   */
+/*   main_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chrilomb <chrilomb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/13 00:00:00 by chrilomb          #+#    #+#             */
-/*   Updated: 2026/09/13 00:00:00 by chrilomb         ###   ########.fr       */
+/*   Updated: 2026/09/29 17:03:33 by chrilomb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main_loop(char **av)
 	if (!simulation)
 		return (free(data), err_msg(MALLOC_ERROR), -1);
 	if (run_simulation(simulation) == -1)
-		return (free_simulation(simulation), err_msg(SIM_ERR), -1);
+		return (ree_simulation(simulation), err_msg(SIM_ERR), -1);
 	free_simulation(simulation);
 	return (exit_screen());
 }

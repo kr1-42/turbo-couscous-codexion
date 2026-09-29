@@ -82,7 +82,6 @@ art:
 ARGS = 20 800 100 100 100 7 100 fifo
 
 test: all
-	@resize -s 80 140
 	./$(NAME) $(ARGS)
 
 valgrind: all
