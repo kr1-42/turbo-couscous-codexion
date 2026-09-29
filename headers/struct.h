@@ -109,4 +109,12 @@ struct s_simulation
 	long long		start_time;
 };
 
+typedef struct s_exbuf
+{
+	char			*data;
+	int				len;
+	int				stop;
+	pthread_mutex_t	lock;
+}	t_exbuf;
+
 #endif

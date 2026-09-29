@@ -18,6 +18,10 @@ SRC = main.c\
 
 UTILS_SRC = cleanup.c\
 	exitscreen.c\
+	exitscreen_data0.c\
+	exitscreen_data1.c\
+	exitscreen_data2.c\
+	exitscreen_data3.c\
 	f_time.c\
 	fill_sim.c\
 	ft_atoll.c\
@@ -78,10 +82,11 @@ art:
 ARGS = 20 800 100 100 100 7 100 fifo
 
 test: all
+	@resize -s 80 140
 	./$(NAME) $(ARGS)
 
 valgrind: all
-	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all ./$(NAME) $(ARGS)
+	valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(ARGS)
 
 hellgrind: all
 	valgrind --tool=helgrind -s --history-level=approx ./$(NAME) $(ARGS)

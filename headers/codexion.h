@@ -26,14 +26,39 @@
 # define MALLOC_ERROR "malloc error occured\n"
 # define SIM_ERR "simulation error occured\n"
 
+# define EX_FRAME_SIZE 6006
+# define EX_NB_FRAMES 12
+# define EX_DELAY_US 50000
+
 /* context */
 
 void			err_msg(const char *msg);
 void			log_state(t_simulation *sim, long long ts, long long id,
 					const char *msg);
 
-/* utils */
+/* exit screen */
 int				exit_screen(void);
+void			ex_add(t_exbuf *b, const char *s);
+void			ex_data_0(t_exbuf *b);
+void			ex_data_1(t_exbuf *b);
+void			ex_data_2(t_exbuf *b);
+void			ex_data_3(t_exbuf *b);
+void			ex_data_4(t_exbuf *b);
+void			ex_data_5(t_exbuf *b);
+void			ex_data_6(t_exbuf *b);
+void			ex_data_7(t_exbuf *b);
+void			ex_data_8(t_exbuf *b);
+void			ex_data_9(t_exbuf *b);
+void			ex_data_10(t_exbuf *b);
+void			ex_data_11(t_exbuf *b);
+void			ex_data_12(t_exbuf *b);
+void			ex_data_13(t_exbuf *b);
+void			ex_data_14(t_exbuf *b);
+void			ex_data_15(t_exbuf *b);
+void			ex_data_16(t_exbuf *b);
+void			ex_data_17(t_exbuf *b);
+
+/* utils */
 long long		get_current_time(void);
 long long		sim_now(t_simulation *sim);
 int				ft_strlen(const char *str);
